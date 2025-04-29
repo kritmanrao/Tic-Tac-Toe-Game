@@ -1,0 +1,155 @@
+*{
+  padding: 0;
+  margin: 0;
+  
+}
+body{
+  background-color:rgb(250, 249, 215);
+}
+
+.app{
+  height: 80dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.score {
+  position: relative;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  box-sizing: border-box;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+  font-size: small;
+}
+.score .left,
+.score .right {
+  position: static;
+  flex: 1;
+  min-width: 40%;
+}
+
+.auto-width-input {
+  text-align: center;
+  display: inline-block;
+  font-weight: 500;
+  background-color: inherit;
+  font-family:cursive;
+  width: 60%;
+  border: none;
+  outline: none;
+  padding: 5px;
+  font-size: 1.3rem;
+  border-radius: 3px;
+}
+
+span{
+  font-size: 1.5rem;
+}
+
+
+.main {
+  margin-top: 30px;
+  background-color:rgba(0, 160, 134, 0.993);
+  width: 300px;
+  height: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2%; 
+  padding: 10px; 
+  border-radius: 10px;
+  box-shadow: 0 0 3px black;
+}
+.box {
+  background-color: rgb(11, 97, 67);
+  width: 31%;
+  height: 31%;
+  box-sizing: border-box;
+  border-radius:5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  box-shadow: 0 0 3px rgb(0, 0, 0);
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none;
+}
+.box:hover{
+  outline: 2px solid rgb(255, 197, 197);
+}
+
+.one{
+  background-color: rgb(255, 209, 232);
+}
+
+.two{
+  background-color: rgb(250, 254, 193);
+}
+
+
+.mid{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  
+}
+.mid div .btn{
+  background-color: #a6e3b1;
+  cursor:pointer;
+  width: 150px;
+  padding: 6px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 3px rgb(0, 0, 0);
+  margin: 10px;
+  padding: 10px;
+  font-size: 1rem;
+}
+.mid div .btn:hover{
+  outline: 1px solid rgb(255, 255, 255);
+}
+
+.mid div .btn:active{
+  background-color: rgb(30, 30, 30);
+  color: rgb(255, 255, 255);
+}
+
+.win{
+  width: 100%;
+  height: 100dvh;
+  background-color: rgb(0, 88, 59);
+}
+.p1{
+  color:rgb(68, 180, 46)
+}
+.p2{
+  color:  rgb(212, 0, 0);
+}
+.active1{
+  border-bottom: rgb(255, 0, 0) 2px solid;
+  box-shadow: 0 0 1px rgb(255, 10, 10);
+  border-radius: 3px;
+  box-sizing: border-box;
+  background-color: #a6e3b1;
+}
+.active2{
+  box-sizing: border-box;
+  border-bottom: rgb(27, 176, 41) 2px solid;
+  box-shadow: 0 0 1px rgb(39, 189, 16);
+  border-radius: 3px;
+  background-color: #a6e3b1;
+}
