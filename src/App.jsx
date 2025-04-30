@@ -1,10 +1,12 @@
-import Loby from './components/Loby.jsx';
+import Loby from "./components/Loby.jsx";
 
 function App() {
   return (
     <div>
-      <Loby/>
-
+      <Loby />
+      <p style={{ textAlign: "center" }}>
+        <strong>Dev: Kritman Rao</strong>
+      </p>
     </div>
   );
 }
