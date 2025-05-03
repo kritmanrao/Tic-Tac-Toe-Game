@@ -1,163 +1,145 @@
 import { useState } from "react";
 import Box from "./Box.jsx";
 
-let turn = true;
-
-var gameOver = false;
 function Loby() {
+  const [turn, setTurn] = useState(true);
+  const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState([0, 0]);
-  const [box, setBox] = useState([
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-  ]);
+  const [winningCells, setWinningCells] = useState([]);
+
+  const [box, setBox] = useState(
+    Array(3)
+      .fill()
+      .map(() => Array(3).fill(0))
+  );
   const [moves, setMoves] = useState([]);
   const [name, setName] = useState({
     player1: "Player 1",
     player2: "Player 2",
   });
 
-  function checkWinner(newBox, p) {
-    let chakeWinner = false;
-    // rows
-    for (let i = 0; i < 3; i++) {
-      if (newBox[i][0] === p && newBox[i][1] === p && newBox[i][2] === p) {
-        chakeWinner = true;
+  const playMusic = (url) => setTimeout(() => new Audio(url).play(), 0);
+
+  const clearBoard = () => {
+    setBox(
+      Array(3)
+        .fill()
+        .map(() => Array(3).fill(0))
+    );
+    setMoves([]);
+    setGameOver(false);
+    setWinningCells([]);
+  };
+
+  const checkWinner = (board, player) => {
+    const lines = [
+      // rows
+      [[0, 0], [0, 1], [0, 2]],
+      [[1, 0], [1, 1], [1, 2]],
+      [[2, 0], [2, 1], [2, 2]],
+      // cols
+      [[0, 0], [1, 0], [2, 0]],
+      [[0, 1], [1, 1], [2, 1]],
+      [[0, 2], [1, 2], [2, 2]],
+      // diagonals
+      [[0, 0], [1, 1], [2, 2]],
+      [[0, 2], [1, 1], [2, 0]],
+    ];
+  
+    for (const line of lines) {
+      if (line.every(([r, c]) => board[r][c] === player)) {
+        setWinningCells(line);
+        setGameOver(true);
+        setWinner(prev => {
+          const copy = [...prev];
+          copy[player - 1]++;
+          return copy;
+        });
+        playMusic("https://assets.mixkit.co/active_storage/sfx/600/600-preview.mp3");
+        setTimeout(() => {
+          clearBoard();
+          setWinningCells([]);
+        }, 1000);
+        return;
       }
     }
-
-    // columns
-    for (let i = 0; i < 3; i++) {
-      if (newBox[0][i] === p && newBox[1][i] === p && newBox[2][i] === p) {
-        chakeWinner = true;
-      }
-    }
-
-    // diagonals
-    if (newBox[0][0] === p && newBox[1][1] === p && newBox[2][2] === p) {
-      chakeWinner = true;
-    } else if (newBox[0][2] === p && newBox[1][1] === p && newBox[2][0] === p) {
-      chakeWinner = true;
-    }
-    if (moves.length === 8 && chakeWinner == false) {
-      playMusic('https://cdn.pixabay.com/audio/2022/12/13/audio_34d1e8985e.mp3');
+  
+    if (moves.length === 8) {
+      playMusic("https://cdn.pixabay.com/audio/2022/12/13/audio_34d1e8985e.mp3");
       setTimeout(() => {
-        clearBoxs();
+        clearBoard();
+        setWinningCells([]);
       }, 1000);
     }
-    if (chakeWinner == true) {
-      gameOver = true;
-      setWinner((curr) => {
-        const arr = [...curr];
-        arr[p - 1]++;
-        return arr;
-      });
-      playMusic("https://assets.mixkit.co/active_storage/sfx/600/600-preview.mp3");
-      setTimeout(() => { 
-        clearBoxs();
-      }, 1000);
-    }
-  }
+  };
+  
 
-  function addMove(i, j) {
-    const newMoves = [...moves];
-    newMoves.push([i, j]);
-    setMoves(newMoves);
-  }
+  const handleClick = (i, j) => {
+    if (gameOver || box[i][j]) return;
 
-  function playMusic(music) {
-    setTimeout(() => {
-      new Audio(music).play();
-    }, 0);
-  }
-
-  async function handleClick(i, j) {
-    if (gameOver) return;
-    if (box[i][j]) return;
-    addMove(i, j);
-
-    playMusic(turn ? "https://cdn.pixabay.com/audio/2025/01/20/audio_9afb73ceb5.mp3" :"https://cdn.pixabay.com/audio/2023/06/15/audio_a0e2c53290.mp3");
+    const player = turn ? 1 : 2;
+    const sound = turn
+      ? "https://cdn.pixabay.com/audio/2025/01/20/audio_9afb73ceb5.mp3"
+      : "https://cdn.pixabay.com/audio/2023/06/15/audio_a0e2c53290.mp3";
+    playMusic(sound);
 
     const newBox = box.map((row, rowIdx) =>
-      row.map((cell, colIdx) => {
-        if (rowIdx === i && colIdx === j) return turn ? 1 : 2;
-        return cell;
-      })
+      row.map((cell, colIdx) => (rowIdx === i && colIdx === j ? player : cell))
     );
+
     setBox(newBox);
-    checkWinner(newBox, turn ? 1 : 2);
-    turn = !turn;
-  }
+    setMoves([...moves, [i, j]]);
+    checkWinner(newBox, player);
+    setTurn(!turn);
+  };
 
-  function handleUndoClick() {
-    if (moves.length) {
-      const newMoves = [...moves];
+  const handleUndoClick = () => {
+    if (!moves.length) return;
+    const [[i, j], ...restMoves] = moves.slice(-1).concat(moves.slice(0, -1));
+    const updatedBox = box.map((row, rIdx) =>
+      row.map((cell, cIdx) => (rIdx === i && cIdx === j ? 0 : cell))
+    );
+    setBox(updatedBox);
+    setMoves(restMoves);
+    setTurn(!turn);
+  };
 
-      const index = newMoves[newMoves.length - 1];
-      newMoves.pop();
-      setMoves(newMoves);
-      const i = index[0];
-      const j = index[1];
-      const newBox = box.map((row, rowIdx) =>
-        row.map((cell, colIdx) => {
-          if (rowIdx === i && colIdx === j) return 0;
-          return cell;
-        })
-      );
-      setBox(newBox);
-      turn = !turn;
-    }
-  }
-
-  function handleReset() {
-    clearBoxs();
+  const handleReset = () => {
+    clearBoard();
     setWinner([0, 0]);
-    turn = true;
-  }
-
-  function clearBoxs() {
-    setBox([
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0],
-    ]);
-    gameOver = false;
-    setMoves([]);
-  }
-
+    setTurn(true);
+  };
 
   return (
     <div className="app">
       <div className="score">
-        <div className={` ${turn ? "active1" : ""} left p2`}>
-          <input className="auto-width-input p2"
-            type="text"
-            value={name.player1}
-            onChange={(e) =>
-              setName((ob) => ({ ...ob, player1: e.target.value }))
-            }
-          />
-          <span className="sc">: {winner[0]}</span>
-        </div>
-        <div className={` ${!turn ? "active2" : ""} right p1`}>
-          <input className="auto-width-input p1"
-            type="text"
-            value={name.player2}
-            onChange={(e) =>
-              setName((ob) => ({ ...ob, player2: e.target.value }))
-            }
-          />
-          <span>: {winner[1]}</span>
-        </div>
+        {["player1", "player2"].map((key, idx) => (
+          <div
+            key={key}
+            className={`${turn === (idx === 0) ? `active${idx + 1}` : ""} ${
+              idx === 0 ? "left p2" : "right p1"
+            }`}
+          >
+            <input
+              className={`auto-width-input ${idx === 0 ? "p2" : "p1"}`}
+              value={name[key]}
+              onChange={(e) =>
+                setName((n) => ({ ...n, [key]: e.target.value }))
+              }
+            />
+            <span className="sc">: {winner[idx]}</span>
+          </div>
+        ))}
       </div>
 
       <div className="main">
         {box.map((row, i) =>
           row.map((val, j) => (
             <Box
-              handleClick={() => handleClick(i, j)}
-              val={val}
               key={`${i}_${j}`}
+              val={val}
+              handleClick={() => handleClick(i, j)}
+              highlight={winningCells.some(([x, y]) => x === i && y === j)}
             />
           ))
         )}

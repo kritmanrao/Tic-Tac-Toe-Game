@@ -70,6 +70,7 @@ span{
   border-radius: 10px;
   box-shadow: 0 0 3px black;
 }
+
 .box {
   background-color: rgb(11, 97, 67);
   width: 31%;
@@ -80,6 +81,8 @@ span{
   justify-content: center;
   align-items: center;
   font-size: 2rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
   box-shadow: 0 0 3px rgb(0, 0, 0);
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
@@ -89,12 +92,18 @@ span{
   outline: 2px solid rgb(255, 197, 197);
 }
 
+.box.highlight {
+  background-color: #f5ff3b;
+  font-weight: bold;
+}
+
+
 .one{
-  background-color: rgb(255, 209, 232);
+  background-color: rgb(152, 200, 255);
 }
 
 .two{
-  background-color: rgb(250, 254, 193);
+  background-color: rgb(245, 183, 255);
 }
 
 
